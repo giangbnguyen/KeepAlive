@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; }
+  body {
+    background: #0f172a;
+    color: #f8fafc;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 48px;
+    padding: 40px;
+    min-height: 100vh;
+  }
+  .screen-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .screen-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .phone {
+    width: 380px;
+    height: 780px;
+    background: #111827;
+    border: 10px solid #334155;
+    border-radius: 42px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+    position: relative;
+  }
+  .status-bar {
+    height: 32px;
+    background: #0f172a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 22px;
+    font-size: 12px;
+    color: #cbd5e1;
+  }
+  .app-bar {
+    padding: 16px 20px;
+    background: #1e293b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #334155;
+  }
+  .app-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .icon-btn {
+    background: #334155;
+    border: none;
+    color: #e2e8f0;
+    padding: 7px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .content {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow: hidden;
+  }
+  .schedule-card {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%);
+    border: 1px solid #3b82f6;
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .schedule-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .schedule-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #eff6ff;
+  }
+  .schedule-sub {
+    font-size: 12px;
+    color: #93c5fd;
+    margin-top: 2px;
+  }
+  .toggle {
+    width: 44px;
+    height: 24px;
+    background: #3b82f6;
+    border-radius: 999px;
+    position: relative;
+  }
+  .toggle::after {
+    content: '';
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+  }
+  .battery-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(16, 185, 129, 0.18);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #6ee7b7;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 8px;
+    align-self: flex-start;
+  }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+  }
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 0.6px;
+  }
+  .btn-check-all {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .account-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 14px;
+    padding: 13px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .account-card.checking {
+    border-color: #3b82f6;
+    background: #172554;
+  }
+  .account-card.error {
+    border-color: #ef4444;
+    background: rgba(127, 29, 29, 0.25);
+  }
+  .acc-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .acc-email {
+    font-size: 14px;
+    font-weight: 700;
+    color: #f1f5f9;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 99px;
+  }
+  .badge.ok { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+  .badge.checking { background: rgba(59, 130, 246, 0.25); color: #60a5fa; }
+  .badge.err { background: rgba(239, 68, 68, 0.25); color: #f87171; }
+  .acc-meta {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.4;
+  }
+  .acc-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(148, 163, 184, 0.12);
+  }
+  .last-check {
+    font-size: 11px;
+    color: #cbd5e1;
+  }
+  .btn-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-sm {
+    background: #334155;
+    color: #f8fafc;
+    border: none;
+    padding: 5px 11px;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .btn-sm.relogin {
+    background: #dc2626;
+    color: white;
+  }
+  .btn-del {
+    background: transparent;
+    color: #94a3b8;
+    border: 1px solid #475569;
+    padding: 4px 8px;
+    border-radius: 7px;
+    font-size: 11px;
+  }
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(96, 165, 250, 0.25);
+    border-top-color: #60a5fa;
+    border-radius: 50%;
+  }
+  .fab-add {
+    margin-top: auto;
+    background: #10b981;
+    color: #052e16;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 13px;
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+  }
+  /* Dialog mockup on second screen */
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.78);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal {
+    background: #1e293b;
+    border: 1px solid #475569;
+    border-radius: 20px;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.6);
+  }
+  .modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #f8fafc;
+  }
+  .field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 5px;
+  }
+  .input-box {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 9px;
+    padding: 9px 11px;
+    font-size: 11px;
+    color: #e2e8f0;
+    font-family: Consolas, monospace;
+    word-break: break-all;
+  }
+  .radio-group, .check-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: 12px;
+    color: #e2e8f0;
+  }
+  .choice-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid #60a5fa; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .dot.active::after {
+    content: ''; width: 6px; height: 6px; border-radius: 50%; background: #60a5fa;
+  }
+  .chk {
+    width: 14px; height: 14px; border-radius: 4px;
+    background: #3b82f6; color: white; font-size: 10px; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+  <!-- SCREEN 1: Main Dashboard -->
+  <div class="screen-wrap">
+    <div class="screen-label">1. Main Dashboard Screen</div>
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G • 100%</span>
+      </div>
+      <div class="app-bar">
+        <div class="app-title">🛡️ Gmail Keep-Alive</div>
+        <button class="icon-btn">⚙ Settings</button>
+      </div>
+      <div class="content">
+        <div class="schedule-card">
+          <div class="schedule-row">
+            <div>
+              <div class="schedule-title">Auto-Check in Background</div>
+              <div class="schedule-sub">Every 14 days • Next: Nov 2, 2026</div>
+            </div>
+            <div class="toggle"></div>
+          </div>
+          <div class="battery-pill">⚡ Unrestricted Battery: Enabled</div>
+        </div>
+
+        <div class="section-header">
+          <span class="section-title">GOOGLE ACCOUNTS (3)</span>
+          <button class="btn-check-all">▶ Check All</button>
+        </div>
+
+        <!-- Account 1: OK -->
+        <div class="account-card">
+          <div class="acc-top">
+            <span class="acc-email">old.account.one@gmail.com</span>
+            <span class="badge ok">✓ ACTIVE</span>
+          </div>
+          <div class="acc-meta">Gmail: Inbox read (42 msgs) • Drive: 5 files listed</div>
+          <div class="acc-actions">
+            <span class="last-check">Last check: 2 hours ago</span>
+            <div class="btn-group">
+              <button class="btn-sm">Check</button>
+              <button class="btn-del">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account 2: Checking with Spinner -->
+        <div class="account-card checking">
+          <div class="acc-top">
+            <span class="acc-email">second.backup@gmail.com</span>
+            <span class="badge checking">CHECKING...</span>
+          </div>
+          <div class="acc-meta">Refreshing OAuth token & reading Gmail inbox...</div>
+          <div class="acc-actions">
+            <span class="last-check">Last check: 34 days ago</span>
+            <div class="btn-group">
+              <div class="spinner"></div>
+              <button class="btn-del">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account 3: Error -->
+        <div class="account-card error">
+          <div class="acc-top">
+            <span class="acc-email">third.legacy@gmail.com</span>
+            <span class="badge err">! NEEDS LOGIN</span>
+          </div>
+          <div class="acc-meta" style="color:#fca5a5;">Error: Refresh token expired or revoked</div>
+          <div class="acc-actions">
+            <span class="last-check">Last check: 79 days ago</span>
+            <div class="btn-group">
+              <button class="btn-sm relogin">Re-login</button>
+              <button class="btn-del">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="fab-add">+ Add Google Account (OAuth2)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Settings & Schedule Modal -->
+  <div class="screen-wrap">
+    <div class="screen-label">2. Settings & Keep-Alive Actions</div>
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G • 100%</span>
+      </div>
+      <div class="app-bar">
+        <div class="app-title">🛡️ Gmail Keep-Alive</div>
+        <button class="icon-btn">⚙ Settings</button>
+      </div>
+      <div class="content"></div>
+      <div class="modal-backdrop">
+        <div class="modal">
+          <div class="modal-title">⚙ App Settings</div>
+
+          <div>
+            <div class="field-label">Google OAuth Client ID (Desktop App)</div>
+            <div class="input-box">482910384-x9k2m1lp.apps.googleusercontent.com</div>
+          </div>
+
+          <div>
+            <div class="field-label">Background Check Frequency</div>
+            <div class="radio-group">
+              <div class="choice-row"><span class="dot"></span> Every 7 days</div>
+              <div class="choice-row"><span class="dot active"></span> Every 14 days (Recommended)</div>
+              <div class="choice-row"><span class="dot"></span> Every 30 days</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="field-label">Activity Actions per Check</div>
+            <div class="check-group">
+              <div class="choice-row"><span class="chk">✓</span> Read Gmail Inbox & latest email</div>
+              <div class="choice-row"><span class="chk">✓</span> Send & trash self keep-alive email</div>
+              <div class="choice-row"><span class="chk">✓</span> List Google Drive files</div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn-sm">Cancel</button>
+            <button class="btn-check-all">Save Settings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
